@@ -1,0 +1,16 @@
+---
+title: "Mapping Tutorial"
+author: "Suvan Chatakondu"
+date: '2022-07-01'
+description: "We are making a mpa based on US census data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(tidycensus)
+library(ggthemes)
+library(tigris)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
