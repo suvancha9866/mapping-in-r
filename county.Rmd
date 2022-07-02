@@ -1,0 +1,38 @@
+---
+title: "Harris County"
+author: "Suvan Chatakondu"
+date: '2022-07-01'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(tidycensus)
+library(ggthemes)
+library(tigris)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+load_variables(2018, "acs5") |> 
+  filter(concept == "RACE")
+
+racevars <- c("B02001_002", "B02001_003", "B02001_005", "B03003_003")
+
+get_acs(geography = "tract", variables = racevars, year = 2018, state = "illinois", county = "dupage", geometry = TRUE, summary_var = "B02001_001") |> 
+  mutate(Percent = 100*(estimate/summary_est)) |> 
+  mutate(variable = if_else(variable == "B03003_003", "Hispanic", variable), 
+         variable = if_else(variable == "B02001_002", "White", variable),
+         variable = if_else(variable == "B02001_003", "Black", variable),
+         variable = if_else(variable == "B02001_005", "Asian", variable)) |> 
+  ggplot(mapping = aes(fill = Percent, color = Percent)) +
+  geom_sf() +
+  facet_wrap(~variable) +
+  scale_fill_viridis_c(direction = -1) +
+  scale_color_viridis_c(direction = -1) +
+  theme_void() +
+  labs(title = "Racial geography of Dupage County, Illinois",
+       fill = "Percent",
+       caption = "Source: American Community Survey 2014-2018")
+```
+
